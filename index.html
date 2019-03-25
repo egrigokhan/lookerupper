@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+
+	<script type="text/javascript" src="math.js"></script>
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.9.0/dist/katex.min.css" integrity="sha384-TEMocfGvRuD1rIAacqrknm5BQZ7W7uWitoih+jMNFXQIbNl16bO8OZmylH/Vi/Ei" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/katex@0.9.0/dist/katex.min.js" integrity="sha384-jmxIlussZWB7qCuB+PgKG1uLjjxbVVIayPJwi6cG6Zb4YKq0JIw+OMnkkEC7kYCq" crossorigin="anonymous"></script>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+</head>
+<body>
+
+	<p>Expression Input: </p>
+	<input type="" name="" id="expression-input" oninput="render()">
+
+	<p id="expression-output"></p>
+
+	<p>Start Input: </p>
+	<input type="" name="" id="start-input">
+
+	<p>Stop Input: </p>
+	<input type="" name="" id="stop-input">
+
+	<p>Step Input: </p>
+	<input type="" name="" id="step-input">
+
+	<p>Width Selection: </p>
+	<form action="">
+	  <input type="radio" name="8" value="8" id="8-bit"> 8-bit<br>
+	  <input type="radio" name="16" value="16" id="16-bit"> 16-bit
+	</form>
+
+	<textarea id="lookup-output"></textarea>
+
+	<button onclick="calculateLookUp()"></button>
+
+</body>
+
+<script type="text/javascript">
+	
+	var FACULTY_ARRAY = ['GOKHAN',
+						 'VOLKAN',
+						 'ORKUN',
+						 'ENGIN',
+						 'TUNA',
+						 'BECU',
+						 'UFUK',
+						 'ATAKAN']
+</script>
+
+<script type="text/javascript">
+
+	var EXPRESSION_INPUT = document.getElementById('expression-input')
+	var START_INPUT = document.getElementById('start-input')
+	var STOP_INPUT = document.getElementById('stop-input')
+	var STEP_INPUT = document.getElementById('step-input')
+	var LOOKUP_OUTPUT = document.getElementById('lookup-output')
+	var EIGHT_BIT_WIDTH_INPUT = document.getElementById('8-bit')
+	var SIXTEEN_BIT_WIDTH_INPUT = document.getElementById('16-bit')
+
+	function calculateLookUp() {
+		// parse an expression into a node, and evaluate the node
+		var NODE = math.parse(EXPRESSION_INPUT.value);
+		var CODE = NODE.compile();
+
+		LOOKUP_OUTPUT.innerHTML = FACULTY_ARRAY[Math.floor(Math.random()*FACULTY_ARRAY.length)] + "_LOOKUP: DB "
+
+		for(var i = parseFloat(START_INPUT.value); i <= parseFloat(STOP_INPUT.value); i = i + parseFloat(STEP_INPUT.value)) {
+			// provide a scope
+			var SCOPE = {
+			    x: i
+			};
+
+			if(EIGHT_BIT_WIDTH_INPUT.checked) {
+				LOOKUP_OUTPUT.innerHTML += ('' + CODE.eval(SCOPE) + ', ') // 9
+			} else if(SIXTEEN_BIT_WIDTH_INPUT.checked) {
+				LOOKUP_OUTPUT.innerHTML += ('LOW(' + CODE.eval(SCOPE) + '), ') // 9
+				LOOKUP_OUTPUT.innerHTML += ('HIGH(' + CODE.eval(SCOPE) + '), ') // 9
+			}
+			
+		}
+	}
+
+	function render() {
+		katex.render(math.parse(EXPRESSION_INPUT.value).toTex({parenthesis: 'keep'}), document.getElementById('expression-output'));
+	}
+
+</script>
+
+</html>
